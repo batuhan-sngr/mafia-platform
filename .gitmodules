@@ -1,3 +1,6 @@
 [submodule "PAD-Task-Service"]
 	path = PAD-Task-Service
 	url = https://github.com/parquett/PAD-Task-Service.git
+[submodule "PAD-Voting-Service"]
+	path = PAD-Voting-Service
+	url = https://github.com/parquett/PAD-Voting-Service.git
