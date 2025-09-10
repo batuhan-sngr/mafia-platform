@@ -1,0 +1,3 @@
+[submodule "PAD-Task-Service"]
+	path = PAD-Task-Service
+	url = https://github.com/parquett/PAD-Task-Service.git
