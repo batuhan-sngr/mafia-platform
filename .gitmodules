@@ -16,3 +16,6 @@
 [submodule "PAD-Town-Service"]
 	path = PAD-Town-Service
 	url = https://github.com/MariusPopa1/PAD-Town-Service
+[submodule "PAD-User-Management-Service"]
+	path = PAD-User-Management-Service
+	url = https://github.com/batuhan-sngr/PAD-User-Management-Service
