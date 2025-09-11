@@ -1,3 +1,6 @@
+[submodule "rumours_comms"]
+	path = rumours_comms
+	url = https://github.com/dott13/mafia-rumours-comms.git
 [submodule "PAD-Task-Service"]
 	path = PAD-Task-Service
 	url = https://github.com/parquett/PAD-Task-Service.git
