@@ -7,7 +7,7 @@
 | Tudor Popov      | FAF-222 | Rumours Service, Communication Service | Rust       |
 | Martiniuc Artiom | FAF-222 | Task Service, Voting Service           | TS         |
 | Emre Batuhan Sungur | FAF - 221| User Management Service, Game Service | GO |
-| [Member 4]       | [Group] | [Service Name]                         | [Language] |
+| Tabanschi Nichita       | FAF-222 | Shop Service , Roleplay Service   |   TS   |
 | [Member 5]       | [Group] | [Service Name]                         | [Language] |
 
 
@@ -41,8 +41,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### 3. Shop Service
 - **Responsibility**: In-game item marketplace and inventory management
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: NestJS
+- **Database**: PostgreSQL
 - **Key Features**:
   - Item catalog with descriptions and prices
   - Daily quantity balancing algorithm
@@ -51,8 +51,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### 4. Roleplay Service
 - **Responsibility**: Role-based actions and ability management
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: NestJS
+- **Database**: PostgreSQL
 - **Key Features**:
   - Role-specific ability enforcement
   - Action logging and validation
@@ -126,7 +126,7 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 ### Programming Languages
 - **Rust**: Rumours Service, Communication Service
 - **TS**: Task Service, Voting Service
-- **[Language 3]**: [Services]
+- **TS**: Shop Service, Roleplay Service
 
 ### Database Technologies
 - **MySQL**: Rumours Service (structured information storage)
@@ -134,7 +134,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 - **PostgreSQL**: Communication Service (persistent chat history)
 - **PostgreSQL**: Task Service (structured tasks, relational with users, transactional updates for rewards)
 - **MongoDB**: Voting Service (append-only votes, flexible schema, fast aggregations for daily results)
-- **[Additional databases as chosen by other team members]**
+- **PostgreSQL**: Shop Service (ACID Compliance, Complex Queries,Relational Structure,Transaction Safety)
+- **PostgreSQL**: Roleplay Service (Data Consistency, Complex Relationships,Audit Trail)
 
 ### Communication Patterns
 - **REST APIs**: Primary communication between services
@@ -643,6 +644,212 @@ GET /task-service/player-activities/{user_id}
 GET /character-service/appearance/{user_id}
 GET /town-service/movement-logs/{user_id}
 ```
+#### Shop Service Endpoints
+```json
+GET /shop/items
+Response: {
+  "categories": {
+    "protection": [
+      {
+        "item_id": "garlic_001",
+        "name": "Garlic Clove",
+        "description": "Protects against vampire attacks",
+        "price": 50,
+        "daily_limit": 3,
+        "remaining_stock": 2,
+        "effects": ["vampire_immunity"]
+      }
+    ],
+    "utilities": [
+      {
+        "item_id": "water_001",
+        "name": "Holy Water",
+        "description": "Extinguishes arsonist fires",
+        "price": 75,
+        "daily_limit": 2,
+        "remaining_stock": 1,
+        "effects": ["fire_protection", "arsonist_counter"]
+      }
+    ]
+  }
+}
+
+POST /shop/purchase
+Request: {
+  "player_id": "player_123",
+  "game_id": "game_001",
+  "items": [
+    {
+      "item_id": "garlic_001",
+      "quantity": 1
+    }
+  ]
+}
+Response: {
+  "transaction_id": "txn_456",
+  "status": "SUCCESS",
+  "total_cost": 50,
+  "remaining_balance": 200,
+  "items_purchased": [
+    {
+      "item_id": "garlic_001",
+      "quantity": 1,
+      "expires_at": "2025-09-12T06:00:00Z"
+    }
+  ]
+}
+
+GET /shop/inventory/{player_id}
+Response: {
+  "player_id": "player_123",
+  "items": [
+    {
+      "inventory_id": "inv_789",
+      "item_id": "garlic_001",
+      "quantity": 1,
+      "acquired_at": "2025-09-11T20:15:00Z",
+      "expires_at": "2025-09-12T06:00:00Z",
+      "status": "ACTIVE"
+    }
+  ],
+  "currency_balance": 200
+}
+
+POST /shop/use-item
+Request: {
+  "player_id": "player_123",
+  "inventory_id": "inv_789",
+  "context": "night_defense"
+}
+Response: {
+  "usage_id": "use_101",
+  "item_consumed": true,
+  "effects_applied": ["vampire_immunity"],
+  "duration": "until_dawn",
+  "remaining_quantity": 0
+}
+
+GET /shop/balance/{player_id}
+Response: {
+  "player_id": "player_123",
+  "current_balance": 200,
+  "pending_transactions": 0,
+  "daily_earned": 50,
+  "daily_spent": 125
+}
+```
+
+#### Roleplay Service Endpoints
+```json
+POST /roleplay/night-action
+Request: {
+  "game_id": "game_001",
+  "player_id": "player_123",
+  "action_type": "MURDER",
+  "target_player_id": "player_456",
+  "night_number": 1
+}
+Response: {
+  "action_id": "action_789",
+  "status": "QUEUED",
+  "can_execute": true,
+  "scheduled_for": "night_phase_end",
+  "warnings": []
+}
+
+POST /roleplay/day-action
+Request: {
+  "game_id": "game_001",
+  "player_id": "player_234",
+  "action_type": "INVESTIGATE",
+  "target_player_id": "player_567",
+  "day_number": 2
+}
+Response: {
+  "action_id": "action_890",
+  "status": "EXECUTED",
+  "result": {
+    "target_role": "CIVILIAN",
+    "confidence": 0.85,
+    "modifiers_applied": ["sheriff_accuracy_bonus"]
+  }
+}
+
+GET /roleplay/abilities/{player_id}
+Response: {
+  "player_id": "player_123",
+  "role": "MAFIA",
+  "abilities": [
+    {
+      "ability_id": "murder",
+      "name": "Nightkill",
+      "description": "Eliminate a player during night phase",
+      "cooldown_remaining": 0,
+      "uses_remaining": "unlimited",
+      "restrictions": ["night_only", "living_targets_only"]
+    }
+  ],
+  "passive_effects": ["mafia_chat_access", "immunity_to_self_votes"]
+}
+
+POST /roleplay/validate-action
+Request: {
+  "player_id": "player_123",
+  "action_type": "MURDER",
+  "target_player_id": "player_456",
+  "game_phase": "NIGHT"
+}
+Response: {
+  "is_valid": false,
+  "blocking_factors": [
+    {
+      "type": "TARGET_IMMUNITY",
+      "source": "garlic_protection",
+      "description": "Target has vampire immunity from garlic"
+    }
+  ],
+  "suggested_alternatives": ["investigate", "wait"]
+}
+
+GET /roleplay/action-history/{game_id}
+Response: {
+  "game_id": "game_001",
+  "actions": [
+    {
+      "action_id": "action_789",
+      "night_number": 1,
+      "actor_role": "MAFIA",
+      "action_type": "MURDER_ATTEMPT",
+      "target_role": "CIVILIAN",
+      "result": "BLOCKED",
+      "blocking_reason": "garlic_immunity",
+      "timestamp": "2025-09-11T23:59:00Z"
+    }
+  ]
+}
+
+POST /roleplay/generate-announcement
+Request: {
+  "game_id": "game_001",
+  "phase_results": [
+    {
+      "action_type": "MURDER",
+      "success": false,
+      "target_id": "player_456",
+      "blocking_factor": "protection_item"
+    }
+  ]
+}
+Response: {
+  "announcement_id": "ann_123",
+  "filtered_message": "The night was quiet. No one was eliminated.",
+  "private_details": {
+    "mafia_perspective": "Your attack on Player456 was blocked by their garlic protection."
+  },
+  "broadcast_ready": true
+}
+```
+
 
 ## GitHub Workflow
 
@@ -658,7 +865,7 @@ GET /town-service/movement-logs/{user_id}
   - `PAD-Communication-Service`
   - `PAD-Task-Service`
   - `PAD-Voting-Service`
-  - `[other-service-repositories]`
+  - `PAD-Shop-Service`
 
 ### Branching Strategy
 - **Main Branch**: Production-ready code only
