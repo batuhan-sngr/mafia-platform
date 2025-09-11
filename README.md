@@ -6,7 +6,7 @@
 |------------------|---------|----------------------------------------|------------|
 | Tudor Popov      | FAF-222 | Rumours Service, Communication Service | Rust       |
 | Martiniuc Artiom | FAF-222 | Task Service, Voting Service           | TS         |
-| [Member 3]       | [Group] | [Service Name]                         | [Language] |
+| Emre Batuhan Sungur | FAF - 221| User Management Service, Game Service | GO |
 | [Member 4]       | [Group] | [Service Name]                         | [Language] |
 | [Member 5]       | [Group] | [Service Name]                         | [Language] |
 
@@ -20,8 +20,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### 1. User Management Service
 - **Responsibility**: User profiles, authentication, currency management, device tracking
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: GO
+- **Database**: PostgreSQL
 - **Key Features**:
   - User registration and authentication
   - Profile management (email, username, password, identification)
@@ -30,8 +30,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### 2. Game Service (Main Component)
 - **Responsibility**: Game state management, day/night cycles, lobby orchestration
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: GO
+- **Database**: Redis and PostgreSQL
 - **Key Features**:
   - Day/Night cycle management
   - Player lobby management (up to 30 players)
@@ -145,11 +145,13 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 ### Architecture Motivations
 - **Rust for Rumours/Communication**: High performance and memory safety for real-time operations
 - **MySQL for Rumours**: ACID compliance for critical game information integrity
-- **Redis for Communication**: Sub-millisecond message delivery and session management
+- **Redis for Communication and Game Service**: Sub-millisecond message delivery and session management
 - **PostgreSQL for Chat History**: Complex querying capabilities for chat analytics
 - **NestJS + TypeScript for Task/Voting**: Strong typing, modular structure, and excellent microservices support
 - **PostgreSQL for Task Service**: Relational data consistency, transactional updates for task completion and rewards
 - **MongoDB for Voting Service**: Flexible schema, high write throughput, and efficient aggregation for daily vote counts
+- **PostgreSQL for User Management Service and Game Service**: Relational data consistency, works well for perssint data
+
 
 ## Communication Contracts
 
@@ -159,7 +161,298 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 - **API Gateway**: Centralized routing and authentication
 
 ### API Endpoints
+#### User Management Service Endpoints
+```json
+POST /api/v1/auth/register
+Content-Type: application/json
+{
+  "username": "string",
+  "email": "string",
+  "password": "string",
+  "device_info": {
+    "device_id": "string",
+    "device_type": "string",
+    "os_version": "string"
+  },
+  "location_info": {
+    "ip_address": "string",
+    "country": "string",
+    "region": "string"
+  }
+}
 
+Response: 201 Created
+{
+  "user_id": "uuid",
+  "username": "string",
+  "email": "string",
+  "access_token": "string",
+  "refresh_token": "string",
+  "expires_at": "timestamp"
+}
+POST /api/v1/auth/login
+Content-Type: application/json
+{
+  "email": "string",
+  "password": "string",
+  "device_info": {
+    "device_id": "string",
+    "device_type": "string",
+    "os_version": "string"
+  }
+}
+
+Response: 200 OK
+{
+  "user_id": "uuid",
+  "username": "string",
+  "email": "string",
+  "access_token": "string",
+  "refresh_token": "string",
+  "expires_at": "timestamp"
+}
+POST /api/v1/auth/refresh
+Content-Type: application/json
+{
+  "refresh_token": "string"
+}
+
+Response: 200 OK
+{
+  "access_token": "string",
+  "expires_at": "timestamp"
+}
+POST /api/v1/auth/logout
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "message": "Successfully logged out"
+}
+GET /api/v1/users/{user_id}
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "user_id": "uuid",
+  "username": "string",
+  "email": "string",
+  "created_at": "timestamp",
+  "last_login": "timestamp",
+  "is_active": "boolean",
+  "currency_balance": "integer"
+}
+PUT /api/v1/users/{user_id}
+Authorization: Bearer {access_token}
+Content-Type: application/json
+{
+  "username": "string",
+  "email": "string"
+}
+
+Response: 200 OK
+{
+  "user_id": "uuid",
+  "username": "string",
+  "email": "string",
+  "updated_at": "timestamp"
+}
+DELETE /api/v1/users/{user_id}
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "message": "User account deleted successfully"
+}
+GET /api/v1/users/{user_id}/currency
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "user_id": "uuid",
+  "balance": "integer",
+  "last_updated": "timestamp"
+}
+
+POST /api/v1/users/{user_id}/currency/add
+Authorization: Bearer {access_token}
+Content-Type: application/json
+{
+  "amount": "integer",
+  "reason": "string",
+  "transaction_id": "string"
+}
+
+Response: 200 OK
+{
+  "user_id": "uuid",
+  "previous_balance": "integer",
+  "new_balance": "integer",
+  "transaction_id": "string"
+}
+```
+
+```json
+POST /api/v1/users/{user_id}/currency/deduct
+Authorization: Bearer {access_token}
+Content-Type: application/json
+{
+  "amount": "integer",
+  "reason": "string",
+  "transaction_id": "string"
+}
+
+Response: 200 OK
+{
+  "user_id": "uuid",
+  "previous_balance": "integer",
+  "new_balance": "integer",
+  "transaction_id": "string"
+}
+GET /api/v1/users/{user_id}/devices
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "devices": [
+    {
+      "device_id": "string",
+      "device_type": "string",
+      "os_version": "string",
+      "last_used": "timestamp",
+      "is_active": "boolean"
+    }
+  ]
+}
+DELETE /api/v1/users/{user_id}/devices/{device_id}
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "message": "Device removed successfully"
+}
+```
+
+#### Game Service Endpoints
+
+```json
+POST /api/v1/games/create
+Authorization: Bearer {access_token}
+Content-Type: application/json
+{
+  "game_name": "string",
+  "max_players": "integer",
+  "game_settings": {
+    "day_duration": "integer",
+    "night_duration": "integer",
+    "roles_config": {
+      "mafia_count": "integer",
+      "doctor_count": "integer",
+      "detective_count": "integer",
+      "townspeople_count": "integer"
+    }
+  }
+}
+
+Response: 201 Created
+{
+  "game_id": "uuid",
+  "game_name": "string",
+  "host_id": "uuid",
+  "max_players": "integer",
+  "current_players": "integer",
+  "status": "waiting",
+  "created_at": "timestamp"
+}
+POST /api/v1/games/{game_id}/join
+Authorization: Bearer {access_token}
+Content-Type: application/json
+{
+  "user_id": "uuid"
+}
+
+Response: 200 OK
+{
+  "game_id": "uuid",
+  "player_id": "uuid",
+  "position": "integer",
+  "status": "joined"
+}
+GET /api/v1/games/{game_id}
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "game_id": "uuid",
+  "game_name": "string",
+  "host_id": "uuid",
+  "players": [
+    {
+      "player_id": "uuid",
+      "username": "string",
+      "is_alive": "boolean",
+      "role": "string",
+      "career": "string",
+      "joined_at": "timestamp"
+    }
+  ],
+  "status": "string",
+  "current_phase": "string",
+  "phase_ends_at": "timestamp",
+  "created_at": "timestamp"
+}
+
+POST /api/v1/games/{game_id}/start
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "game_id": "uuid",
+  "status": "in_progress",
+  "current_phase": "day",
+  "phase_ends_at": "timestamp",
+  "message": "Game started successfully"
+}
+ET /api/v1/games/{game_id}/state
+Authorization: Bearer {access_token}
+
+Response: 200 OK
+{
+  "game_id": "uuid",
+  "current_phase": "string",
+  "phase_number": "integer",
+  "phase_ends_at": "timestamp",
+  "alive_players": "integer",
+  "total_players": "integer",
+  "last_events": [
+    {
+      "event_id": "uuid",
+      "event_type": "string",
+      "message": "string",
+      "timestamp": "timestamp"
+    }
+  ]
+}
+
+POST /api/v1/games/{game_id}/events
+Authorization: Bearer {access_token}
+Content-Type: application/json
+{
+  "event_type": "string",
+  "message": "string",
+  "affected_players": ["uuid"],
+  "metadata": "object"
+}
+
+Response: 201 Created
+{
+  "event_id": "uuid",
+  "game_id": "uuid",
+  "event_type": "string",
+  "message": "string",
+  "timestamp": "timestamp"
+}
+```
 #### Rumours Service Endpoints
 ```json
 GET /rumours/available/{user_id}
