@@ -2,13 +2,13 @@
 
 ## Team Composition
 
-| Full Name     | Group    | Services                          | Language |
-|---------------|----------|-----------------------------------|----------|
-| Tudor Popov   | FAF-222  | Rumours Service, Communication Service | Rust      |
-| [Member 2]    | [Group]  | [Service Name]                    | [Language] |
-| [Member 3]    | [Group]  | [Service Name]                    | [Language] |
-| [Member 4]    | [Group]  | [Service Name]                    | [Language] |
-| [Member 5]    | [Group]  | [Service Name]                    | [Language] |
+| Full Name        | Group   | Services                               | Language   |
+|------------------|---------|----------------------------------------|------------|
+| Tudor Popov      | FAF-222 | Rumours Service, Communication Service | Rust       |
+| Martiniuc Artiom | FAF-222 | Task Service, Voting Service           | TS         |
+| [Member 3]       | [Group] | [Service Name]                         | [Language] |
+| [Member 4]       | [Group] | [Service Name]                         | [Language] |
+| [Member 5]       | [Group] | [Service Name]                         | [Language] |
 
 
 ## Project Overview
@@ -103,8 +103,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### 9. Task Service
 - **Responsibility**: Daily task assignment and completion tracking
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: NestJS
+- **Database**: PostgreSQL
 - **Key Features**:
   - Role and career-based task generation
   - Task completion validation
@@ -113,8 +113,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### 10. Voting Service
 - **Responsibility**: Democratic elimination process management
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: NestJS
+- **Database**: MongoDB
 - **Key Features**:
   - Vote collection and tallying
   - Vote history tracking
@@ -125,13 +125,15 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### Programming Languages
 - **Rust**: Rumours Service, Communication Service
-- **[Language 2]**: [Services]
+- **TS**: Task Service, Voting Service
 - **[Language 3]**: [Services]
 
 ### Database Technologies
 - **MySQL**: Rumours Service (structured information storage)
 - **Redis**: Communication Service (real-time messaging, session management)
 - **PostgreSQL**: Communication Service (persistent chat history)
+- **PostgreSQL**: Task Service (structured tasks, relational with users, transactional updates for rewards)
+- **MongoDB**: Voting Service (append-only votes, flexible schema, fast aggregations for daily results)
 - **[Additional databases as chosen by other team members]**
 
 ### Communication Patterns
@@ -145,6 +147,9 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 - **MySQL for Rumours**: ACID compliance for critical game information integrity
 - **Redis for Communication**: Sub-millisecond message delivery and session management
 - **PostgreSQL for Chat History**: Complex querying capabilities for chat analytics
+- **NestJS + TypeScript for Task/Voting**: Strong typing, modular structure, and excellent microservices support
+- **PostgreSQL for Task Service**: Relational data consistency, transactional updates for task completion and rewards
+- **MongoDB for Voting Service**: Flexible schema, high write throughput, and efficient aggregation for daily vote counts
 
 ## Communication Contracts
 
@@ -251,6 +256,84 @@ Events: {
 }
 ```
 
+#### Task Service Endpoints
+```json
+POST /tasks/generate
+Request: {
+  "game_id": "game_001",
+  "player_ids": ["player_123", "player_456"],
+  "day_number": 1
+}
+Response: {
+  "generated_tasks": [...]
+}
+
+PATCH /tasks/{task_id}/complete
+Request: {
+  "player_id": "player_123",
+  "used_items": ["garlic"],
+  "completion_notes": "Completed task successfully"
+}
+Response: {
+  "task_id": "task_789",
+  "status": "COMPLETED",
+  "completed_at": "2025-09-11T18:00:00Z",
+  "currency_awarded": 20
+}
+
+GET /tasks/player/{player_id}
+Response: {
+  "tasks": [...]
+}
+```
+
+#### Voting Service Endpoints
+```json
+POST /voting/sessions
+Request: {
+  "game_id": "game_001",
+  "eligible_voters": ["player_123", "player_456"],
+  "eligible_targets": ["player_234", "player_567"],
+  "duration_minutes": 10,
+  "day_number": 1
+}
+Response: {
+  "session_id": "session_001",
+  "status": "ACTIVE",
+  "start_time": "...",
+  "end_time": "...",
+  "total_votes": 0
+}
+
+POST /voting/vote
+Request: {
+  "session_id": "session_001",
+  "voter_id": "player_123",
+  "target_player_id": "player_567"
+}
+Response: {
+  "vote_id": "vote_123",
+  "is_valid": true,
+  "cast_at": "2025-09-11T20:01:00Z"
+}
+
+GET /voting/sessions/{game_id}/current
+Response: {
+  "session_id": "session_001",
+  "status": "ACTIVE",
+  "total_votes": 8,
+  "eligible_voters": [...],
+  "eligible_targets": [...]
+}
+
+PATCH /voting/sessions/{session_id}/end
+Response: {
+  "session_id": "session_001",
+  "status": "ENDED",
+  "eliminated_player_id": "player_234"
+}
+```
+
 #### Cross-Service Integration Points
 ```json
 // From Game Service to Communication Service
@@ -280,6 +363,8 @@ GET /town-service/movement-logs/{user_id}
 - **Private Submodules**:
   - `PAD-Rumors-Service`
   - `PAD-Communication-Service`
+  - `PAD-Task-Service`
+  - `PAD-Voting-Service`
   - `[other-service-repositories]`
 
 ### Branching Strategy
