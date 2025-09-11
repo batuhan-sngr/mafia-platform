@@ -19,3 +19,6 @@
 [submodule "PAD-User-Management-Service"]
 	path = PAD-User-Management-Service
 	url = https://github.com/batuhan-sngr/PAD-User-Management-Service
+[submodule "PAD-Game-Service"]
+	path = PAD-Game-Service
+	url = https://github.com/batuhan-sngr/PAD-Game-Service
