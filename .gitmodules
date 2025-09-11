@@ -10,3 +10,9 @@
 [submodule "PAD-Rumors-Service"]
 	path = PAD-Rumors-Service
 	url = https://github.com/dott13/PAD-Rumors-Service.git
+[submodule "PAD-Character-Service"]
+	path = PAD-Character-Service
+	url = https://github.com/MariusPopa1/PAD-Character-Service
+[submodule "PAD-Town-Service"]
+	path = PAD-Town-Service
+	url = https://github.com/MariusPopa1/PAD-Town-Service
