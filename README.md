@@ -2,13 +2,13 @@
 
 ## Team Composition
 
-| Full Name        | Group   | Services                               | Language   |
-|------------------|---------|----------------------------------------|------------|
-| Tudor Popov      | FAF-222 | Rumours Service, Communication Service | Rust       |
-| Martiniuc Artiom | FAF-222 | Task Service, Voting Service           | TS         |
-| Emre Batuhan Sungur | FAF - 221| User Management Service, Game Service | GO |
-| Tabanschi Nichita       | FAF-222 | Shop Service , Roleplay Service   |   TS   |
-| [Member 5]       | [Group] | [Service Name]                         | [Language] |
+| Full Name           | Group   | Services                               | Language |
+|---------------------|---------|----------------------------------------|----------|
+| Popov Tudor         | FAF-222 | Rumours Service, Communication Service | Rust     |
+| Martiniuc Artiom    | FAF-222 | Task Service, Voting Service           | TS       |
+| Emre Batuhan Sungur | FAF-221 | User Management Service, Game Service  | GO       |
+| Tabanschi Nichita   | FAF-222 | Shop Service , Roleplay Service        | TS       |
+| Popa Marius         | FAF-222 | Town Service, Character Service        | Go       |
 
 
 ## Project Overview
@@ -61,22 +61,24 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ### 5. Town Service
 - **Responsibility**: Location and movement tracking
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: Go
+- **Database**: PostgreSQL
 - **Key Features**:
   - Location catalog (Shop, Informator Bureau, etc.)
   - User movement tracking
   - Task Service integration for location-based tasks
+  - History of user movements for rumor generation and validations
 
 ### 6. Character Service
 - **Responsibility**: Character customization and inventory management
-- **Technology**: [To be filled by team member]
-- **Database**: [To be filled by team member]
+- **Technology**: Go
+- **Database**: PostgreSQL
 - **Key Features**:
   - Character appearance customization
   - Asset management system
   - Inventory tracking from shop purchases
   - Customizable slots (hair accessories, coats, etc.)
+  - Integration with Shop Service for updates
 
 ### 7. Rumours Service
 - **Responsibility**: Information marketplace and strategic intelligence
@@ -127,6 +129,7 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 - **Rust**: Rumours Service, Communication Service
 - **TS**: Task Service, Voting Service
 - **TS**: Shop Service, Roleplay Service
+- **Go**: Town Service, Character Service
 
 ### Database Technologies
 - **MySQL**: Rumours Service (structured information storage)
@@ -136,6 +139,8 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 - **MongoDB**: Voting Service (append-only votes, flexible schema, fast aggregations for daily results)
 - **PostgreSQL**: Shop Service (ACID Compliance, Complex Queries,Relational Structure,Transaction Safety)
 - **PostgreSQL**: Roleplay Service (Data Consistency, Complex Relationships,Audit Trail)
+- **PostgreSQL**: Town Service (relational, structured, integrates well with Go)
+- **PostgreSQL**: Character Service (strong consistency, structured queries, relationships: tasks, user movements)
 
 ### Communication Patterns
 - **REST APIs**: Primary communication between services
@@ -151,8 +156,9 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 - **NestJS + TypeScript for Task/Voting**: Strong typing, modular structure, and excellent microservices support
 - **PostgreSQL for Task Service**: Relational data consistency, transactional updates for task completion and rewards
 - **MongoDB for Voting Service**: Flexible schema, high write throughput, and efficient aggregation for daily vote counts
-- **PostgreSQL for User Management Service and Game Service**: Relational data consistency, works well for perssint data
-
+- **PostgreSQL for User Management Service and Game Service**: Relational data consistency, works well for persistent data
+- **Go for Town and Character Services**: lightweight runtime, low latency, scalable operations good for tracking inventory management
+- **PostgreSQL for Town and Character Services**: relational consistency, reliable data storage for location catalogs, movement logs, inventory tracking, and character customization
 
 ## Communication Contracts
 
@@ -848,6 +854,88 @@ Response: {
   },
   "broadcast_ready": true
 }
+```
+#### Town Service Endpoints 
+```json
+GET /town/locations
+Response: {
+"locations": [
+{ "id": "loc_001", "name": "Shop", "description": "Buy items" },
+{ "id": "loc_002", "name": "Informator Bureau", "description": "Get information" }
+]
+}
+
+POST /town/move
+Request: {
+"user_id": "user_123",
+"location_id": "loc_002"
+}
+Response: {
+"success": true,
+"message": "User moved successfully",
+"timestamp": "2025-09-12T14:00:00Z"
+}
+
+GET /town/movements/{user_id}
+Response: {
+"movements": [
+{ "location_id": "loc_001", "timestamp": "2025-09-12T13:00:00Z" },
+{ "location_id": "loc_002", "timestamp": "2025-09-12T14:00:00Z" }
+]
+}
+```
+#### Character Service Endpoints
+```json
+GET /character/{user_id}
+Response: {
+  "user_id": "user_123",
+  "appearance": {
+    "hair": "spiky_black",
+    "coat": "leather_trench"
+  },
+  "inventory": [
+    { "item_id": "item_101", "name": "Garlic" },
+    { "item_id": "item_202", "name": "Silver Dagger" }
+  ]
+}
+
+POST /character/customize
+Request: {
+  "user_id": "user_123",
+  "slot": "coat",
+  "asset_id": "asset_567"
+}
+Response: {
+  "success": true,
+  "appearance": {
+    "hair": "spiky_black",
+    "coat": "asset_567"
+  }
+}
+
+POST /character/inventory/add
+Request: {
+  "user_id": "user_123",
+  "item_id": "item_303"
+}
+Response: {
+  "success": true,
+  "inventory": [
+    { "item_id": "item_101", "name": "Garlic" },
+    { "item_id": "item_202", "name": "Silver Dagger" },
+    { "item_id": "item_303", "name": "Healing Potion" }
+  ]
+}
+
+GET /character/assets
+Response: {
+  "assets": [
+    { "id": "asset_123", "type": "hair", "name": "Curly Blonde" },
+    { "id": "asset_567", "type": "coat", "name": "Leather Trench" }
+  ]
+}
+
+
 ```
 
 
