@@ -16,7 +16,7 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 
 ## Architecture Diagram
 
-![Architecture Diagram](images/Architecture_Diagram.png)
+![Architecture Diagram](Images/Architecture_Diagram.png)
 
 ## Service Descriptions
 
