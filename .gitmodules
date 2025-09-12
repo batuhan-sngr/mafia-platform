@@ -22,3 +22,9 @@
 [submodule "PAD-Game-Service"]
 	path = PAD-Game-Service
 	url = https://github.com/batuhan-sngr/PAD-Game-Service
+[submodule "PAD-Shop-Service"]
+	path = PAD-Shop-Service
+	url = https://github.com/nichitatabanschi/PAD-Shop-Service.git
+[submodule "PAD-PlayRole-Service"]
+	path = PAD-PlayRole-Service
+	url = https://github.com/nichitatabanschi/PAD-PlayRole-Service.git
