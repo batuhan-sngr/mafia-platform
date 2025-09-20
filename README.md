@@ -129,11 +129,21 @@ To run this service from the Docker Hub image, you need to provide the following
 - **Responsibility**: Democratic elimination process management
 - **Technology**: NestJS
 - **Database**: MongoDB
+- - **Docker Hub Image**: [Link](https://hub.docker.com/layers/parquett/pad-voting-service/0.0.1/images/sha256:232fcd6958b07c80894d80eedb099dbd81a8f57568eddaf3f858396f1f2e5e5c?uuid=5630B1A8-AC03-4DB9-81DE-AFED32EBB207)
 - **Key Features**:
   - Vote collection and tallying
   - Vote history tracking
   - Result calculation and notification
   - Integration with Game Service for elimination execution
+
+#### Running the Service
+To run this service from the Docker Hub image, you need to provide the following environment variables:
+
+- `PORT`: The port of service (e.g., 3000).
+- `MONGO_PORT`: The port of MongoDB (e.g., 27017).
+- `MONGO_USER`: The username for the database.
+- `MONGO_PASS`: The password for the database.
+- `MONGO_DB_NAME`: The name of the database.
 
 ## Technology Stack & Communication Patterns
 
