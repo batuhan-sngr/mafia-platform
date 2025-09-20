@@ -109,11 +109,21 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 - **Responsibility**: Daily task assignment and completion tracking
 - **Technology**: NestJS
 - **Database**: PostgreSQL
+- **Docker Hub Image**: [Link](https://hub.docker.com/layers/parquett/pad-task-service/0.0.1/images/sha256:42e34dd3f7985d6f960a4066ca7701ab2a1bcc03380b093106345d1553c55857?uuid=5630B1A8-AC03-4DB9-81DE-AFED32EBB207)
 - **Key Features**:
   - Role and career-based task generation
   - Task completion validation
   - Currency reward distribution
   - Integration with item usage, location visits, and player interactions
+
+#### Running the Service
+To run this service from the Docker Hub image, you need to provide the following environment variables:
+
+- `DB_HOST`: The hostname of the PostgreSQL database.
+- `DB_PORT`: The port of the PostgreSQL database (e.g., 5432).
+- `DB_USERNAME`: The username for the database.
+- `DB_PASSWORD`: The password for the database.
+- `DB_DATABASE`: The name of the database.
 
 ### 10. Voting Service
 - **Responsibility**: Democratic elimination process management
@@ -560,7 +570,7 @@ Events: {
 
 #### Task Service Endpoints
 ```json
-POST /tasks/generate
+POST /api/v1/tasks/generate
 Request: {
   "game_id": "game_001",
   "player_ids": ["player_123", "player_456"],
@@ -570,7 +580,7 @@ Response: {
   "generated_tasks": [...]
 }
 
-PATCH /tasks/{task_id}/complete
+PATCH /api/v1/tasks/{task_id}/complete
 Request: {
   "player_id": "player_123",
   "used_items": ["garlic"],
@@ -583,7 +593,7 @@ Response: {
   "currency_awarded": 20
 }
 
-GET /tasks/player/{player_id}
+GET /api/v1/tasks/player/{player_id}
 Response: {
   "tasks": [...]
 }
