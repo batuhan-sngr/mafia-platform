@@ -85,7 +85,7 @@ A comprehensive Mafia game platform built with microservices architecture, suppo
 ### 7. Rumours Service
 - **Responsibility**: Information marketplace and strategic intelligence
 - **Technology**: Rust
-- **Database**: MySQL
+- **Database**: PostgreSQL
 - **Key Features**:
   - Random information generation based on game state
   - Role-based information filtering

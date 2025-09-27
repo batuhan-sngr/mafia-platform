@@ -1,0 +1,240 @@
+{
+	"info": {
+		"_postman_id": "1a04d554-c42b-4bc1-961f-7c6f29c92be8",
+		"name": "PAD-Communication-Service-API",
+		"description": "This is a postman collection for testing routes of the Communication Service API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29964755"
+	},
+	"item": [
+		{
+			"name": "Lobby",
+			"item": [
+				{
+					"name": "Create Lobby",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"Lobby 2029\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/lobby",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"lobby"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Lobbies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/lobby",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"lobby"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SIngle Lobby",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/lobby/2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"lobby",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Lobby",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Name after update\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/lobby/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"lobby",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Lobby",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/lobby/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"lobby",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "Create Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"How did you find me?\",\n    \"lobby_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/message",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/message",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"message"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Message",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/message/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"message",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Message",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\" : \"I dont remember what here should be\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/message/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"message",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Message",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/message/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"message",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
