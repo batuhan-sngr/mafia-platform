@@ -28,3 +28,6 @@
 [submodule "PAD-PlayRole-Service"]
 	path = PAD-PlayRole-Service
 	url = https://github.com/nichitatabanschi/PAD-PlayRole-Service.git
+[submodule "PAD-Gateway"]
+	path = PAD-Gateway
+	url = https://github.com/parquett/PAD-Gateway.git
